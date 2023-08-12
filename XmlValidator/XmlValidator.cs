@@ -8,11 +8,12 @@ public class XmlValidator
     public bool DetermineXml(string xml)
     {
         // early exit if early format is not satisfied
-        if (string.IsNullOrWhiteSpace(xml) || !xml.StartsWith("<") || !xml.EndsWith(">")) return false;
+        if (string.IsNullOrWhiteSpace(xml) || !xml.StartsWith("<") || !xml.EndsWith(">"))
+            return false;
 
         try
         {
-            // leverage C# Linq XML document class 
+            // leverage C# Linq XML document class
             var xDoc = XDocument.Parse(xml);
             return ValidateNodes(xDoc.Root);
         }
@@ -25,11 +26,11 @@ public class XmlValidator
 
     private bool ValidateNodes(XElement? node)
     {
-        if (node == null || node.HasAttributes) return false;
+        if (node == null || node.HasAttributes)
+            return false;
 
         var isValid = true;
-        var nodes = node.Nodes().ToList();
-        foreach (var childNode in nodes)
+        foreach (var childNode in node.Nodes())
             switch (childNode.NodeType)
             {
                 case XmlNodeType.Element:
@@ -47,11 +48,13 @@ public class XmlValidator
         // convert the string once to a Span for performance gains
         // this might be too fancy, we can still revert to plain old string
         var nodeString = node.ToString(SaveOptions.DisableFormatting).AsSpan();
-        if (nodeString.IsEmpty || nodeString.IsWhiteSpace()) return false;
+        if (nodeString.IsEmpty || nodeString.IsWhiteSpace())
+            return false;
 
         // find the first end tag, grab the node name here
         var openingTag = nodeString.Slice(1, nodeString.IndexOf('>') - 1);
-        if (openingTag.IsEmpty || openingTag.IsWhiteSpace()) return false;
+        if (openingTag.IsEmpty || openingTag.IsWhiteSpace())
+            return false;
 
         // manually construct the end tag and ensure it's the end of the string
         isValid &= nodeString.EndsWith(string.Concat("</", openingTag, ">"));
