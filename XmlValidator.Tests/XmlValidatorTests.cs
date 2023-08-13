@@ -1,4 +1,4 @@
-﻿namespace XmlValidator.Tests;
+namespace XmlValidator.Tests;
 
 public class XmlValidatorTests
 {
