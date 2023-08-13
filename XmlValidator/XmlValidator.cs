@@ -31,6 +31,7 @@ public class XmlValidator
 
         var isValid = true;
         foreach (var childNode in node.Nodes())
+        {
             switch (childNode.NodeType)
             {
                 case XmlNodeType.Element:
@@ -44,6 +45,7 @@ public class XmlValidator
                     // we don't care about other forms of nodes for this exercise
                     return false;
             }
+        }
 
         // convert the string once to a Span for performance gains
         // this might be too fancy, we can still revert to plain old string
@@ -52,7 +54,7 @@ public class XmlValidator
             return false;
 
         // find the first end tag, grab the node name here
-        var openingTag = nodeString.Slice(1, nodeString.IndexOf('>') - 1);
+        var openingTag = nodeString[1..nodeString.IndexOf('>')];
         if (openingTag.IsEmpty || openingTag.IsWhiteSpace())
             return false;
 
