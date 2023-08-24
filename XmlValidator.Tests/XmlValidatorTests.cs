@@ -28,10 +28,21 @@ public class XmlValidatorTests
     [InlineData("<Design><  >hello world</></Design>")]
     [InlineData("<Design><  >hello world</  ></Design>")]
     [InlineData("<Design/Design>")]
+    [InlineData("<Design></    Design>")]
+    [InlineData("<Design></Design    >")]
+    [InlineData("<Design    ></Design>")]
+    [InlineData("<    Design></Design>")]
     [InlineData("<Design>/Design>")]
     [InlineData("<Design</Design>")]
     [InlineData("</Design>")]
     [InlineData("<Design>")]
+    [InlineData("< >")]
+    [InlineData("<Test attrib=false>")]
+    [InlineData("<Test attrib='false'>")]
+    [InlineData("<Test attrib=\"false\">")]
+    [InlineData("<Test     ")]
+    [InlineData("<     Test")]
+    [InlineData("</ >")]
     public void DetermineXml_InvalidInputStressTest(string xml)
     {
         // act
