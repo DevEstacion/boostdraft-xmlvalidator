@@ -1,15 +1,21 @@
+using BenchmarkDotNet.Attributes;
+
 namespace XmlValidator;
 
 public class XmlValidator
 {
     private static readonly char[] s_invalidCharacters;
+    private static readonly HashSet<char> s_triggerCharacters;
 
     static XmlValidator()
     {
         // define a bigger set of invalid characters once available
         s_invalidCharacters = " =\\//\"'".ToArray();
+        // define characters that triggers the logic
+        s_triggerCharacters = new HashSet<char>("</>");
     }
 
+    [Benchmark]
     public bool DetermineXml(string xml)
     {
         // early exit if early format is not satisfied
@@ -44,6 +50,9 @@ public class XmlValidator
         for (var index = 0; index < charSpans.Length; index++)
         {
             var currentChar = charSpans[index];
+            // fast skip in-case character is not part of the trigger characters
+            if (!s_triggerCharacters.Contains(currentChar))
+                continue;
             // preserve the locations of the found opening tags in a stack
             // ensure first in first out to ensure match with the found closing tag
             if (currentChar == '<' && index != lastCharArrayIndex && charSpans[index + 1] != '/')
