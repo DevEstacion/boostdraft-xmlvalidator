@@ -1,4 +1,5 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿using System.Diagnostics.CodeAnalysis;
+using BenchmarkDotNet.Attributes;
 
 namespace Benchmarker;
 
@@ -6,7 +7,7 @@ namespace Benchmarker;
 public class Benchmark
 {
     private const string _xml = "<Design><Code></Code></Design>";
-    private XmlValidator.XmlValidator _validator;
+    private XmlValidator.XmlValidator _validator = default!;
 
     [GlobalSetup]
     public void Setup()

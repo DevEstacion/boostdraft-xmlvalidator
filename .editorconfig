@@ -45,6 +45,8 @@ dotnet_diagnostic.CA1707.severity = silent
 dotnet_diagnostic.CA2201.severity = silent
 # can be marked as static
 dotnet_diagnostic.CA1822.severity = silent
+# seal class
+dotnet_diagnostic.CA1852.severity = silent
 # "this." and "Me." qualifiers
 dotnet_style_qualification_for_field = true:none
 dotnet_style_qualification_for_property = true:none

@@ -4,15 +4,15 @@ namespace XmlValidator;
 
 public class XmlValidator
 {
-    private static readonly char[] s_invalidCharacters;
-    private static readonly HashSet<char> s_triggerCharacters;
+    private static readonly char[] _invalidCharacters;
+    private static readonly HashSet<char> _triggerCharacters;
 
     static XmlValidator()
     {
         // define a bigger set of invalid characters once available
-        s_invalidCharacters = " =\\//\"'".ToArray();
+        _invalidCharacters = " =\\//\"'".ToArray();
         // define characters that triggers the logic
-        s_triggerCharacters = new HashSet<char>("</>");
+        _triggerCharacters = new HashSet<char>("</>");
     }
 
     [Benchmark]
@@ -51,7 +51,7 @@ public class XmlValidator
         {
             var currentChar = charSpans[index];
             // fast skip in-case character is not part of the trigger characters
-            if (!s_triggerCharacters.Contains(currentChar))
+            if (!_triggerCharacters.Contains(currentChar))
                 continue;
             // preserve the locations of the found opening tags in a stack
             // ensure first in first out to ensure match with the found closing tag
@@ -94,7 +94,7 @@ public class XmlValidator
         // check for common cases as well as invalid characters
         if (closingTagName.IsEmpty
             || closingTagName.IsWhiteSpace()
-            || closingTagName.Contains(s_invalidCharacters, StringComparison.InvariantCulture))
+            || closingTagName.Contains(_invalidCharacters, StringComparison.InvariantCulture))
         {
             return false;
         }
