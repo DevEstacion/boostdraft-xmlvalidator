@@ -1,20 +1,10 @@
+using System.Data.SqlTypes;
 using BenchmarkDotNet.Attributes;
 
 namespace XmlValidator;
 
 public class XmlValidator
 {
-    private static readonly char[] _invalidCharacters;
-    private static readonly HashSet<char> _triggerCharacters;
-
-    static XmlValidator()
-    {
-        // define a bigger set of invalid characters once available
-        _invalidCharacters = " =\\//\"'".ToArray();
-        // define characters that triggers the logic
-        _triggerCharacters = new HashSet<char>("</>");
-    }
-
     [Benchmark]
     public bool DetermineXml(string xml)
     {
@@ -43,6 +33,7 @@ public class XmlValidator
     /// </summary>
     private static bool PerformCharacterLoop(ReadOnlySpan<char> charSpans)
     {
+        Span<char> triggerCharacters = stackalloc char[3] { '<', '/', '>' };
         var isValid = true;
         var lessThanCharElementStarts = new Stack<int>();
         var lastLessThanCharIndex = 0;
@@ -51,7 +42,7 @@ public class XmlValidator
         {
             var currentChar = charSpans[index];
             // fast skip in-case character is not part of the trigger characters
-            if (!_triggerCharacters.Contains(currentChar))
+            if (triggerCharacters.Contains(currentChar))
                 continue;
             // preserve the locations of the found opening tags in a stack
             // ensure first in first out to ensure match with the found closing tag
@@ -89,12 +80,13 @@ public class XmlValidator
 
     private static bool PerformValidation(ReadOnlySpan<char> charSpans, int startIndex, int endIndexLeft, int endIndexRight)
     {
+        Span<char> invalidCharacters = stackalloc char[6] { ' ', '=', '\\', '/', '"', '\'' };
         // gets the tag name without the greater than and less than characters
         var closingTagName = charSpans[(endIndexLeft + 2)..endIndexRight];
         // check for common cases as well as invalid characters
         if (closingTagName.IsEmpty
             || closingTagName.IsWhiteSpace()
-            || closingTagName.Contains(_invalidCharacters, StringComparison.InvariantCulture))
+            || closingTagName.Contains(invalidCharacters, StringComparison.InvariantCulture))
         {
             return false;
         }
