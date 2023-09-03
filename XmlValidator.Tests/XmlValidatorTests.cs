@@ -2,8 +2,6 @@ namespace XmlValidator.Tests;
 
 public class XmlValidatorTests
 {
-    private readonly XmlValidator _validator = new();
-
     [Theory]
     [InlineData("<Design><Code></Code></Design>", true)]
     [InlineData("<Design><Code>hello world</Code></Design>", true)]
@@ -14,7 +12,7 @@ public class XmlValidatorTests
     public void DetermineXml_Tests(string xml, bool isValid)
     {
         // act
-        var result = _validator.DetermineXml(xml);
+        var result = XmlValidator.DetermineXml(xml);
 
         // assert
         Assert.Equal(result, isValid);
@@ -46,7 +44,7 @@ public class XmlValidatorTests
     public void DetermineXml_InvalidInputStressTest(string xml)
     {
         // act
-        var result = _validator.DetermineXml(xml);
+        var result = XmlValidator.DetermineXml(xml);
 
         // assert
         Assert.False(result);

@@ -2,14 +2,35 @@ using BenchmarkDotNet.Attributes;
 
 namespace XmlValidator;
 
-public class XmlValidator
+public static class XmlValidator
 {
-    private static readonly char[] s_invalidCharacters;
+    private static readonly char[] _invalidCharacters;
 
     static XmlValidator()
     {
         // define a bigger set of invalid characters once available
-        s_invalidCharacters = new[] {' ', '=', '\\', '/', '"', '\''};
+        _invalidCharacters = new[] {' ', '=', '\\', '/', '"', '\''};
+    }
+
+    [Benchmark]
+    public static bool DetermineXml(string xml)
+    {
+        // early exit if early format is not satisfied
+        if (string.IsNullOrWhiteSpace(xml) || !xml.StartsWith("<") || !xml.EndsWith(">"))
+            return false;
+
+        try
+        {
+            // use span for performance gains and prevent recreation of
+            // string instances and memory usages. useful for big xml's
+            var charSpans = xml.AsSpan();
+            return PerformCharacterLoop(charSpans);
+        }
+        catch (Exception)
+        {
+            // ignore exception, consider malformed xml
+            return false;
+        }
     }
 
     /// <summary>
@@ -71,7 +92,7 @@ public class XmlValidator
         // check for common cases as well as invalid characters
         if (closingTagName.IsEmpty
             || closingTagName.IsWhiteSpace()
-            || closingTagName.Contains(s_invalidCharacters, StringComparison.InvariantCulture))
+            || closingTagName.Contains(_invalidCharacters, StringComparison.InvariantCulture))
         {
             return false;
         }
@@ -91,26 +112,5 @@ public class XmlValidator
         }
 
         return true;
-    }
-
-    [Benchmark]
-    public bool DetermineXml(string xml)
-    {
-        // early exit if early format is not satisfied
-        if (string.IsNullOrWhiteSpace(xml) || !xml.StartsWith("<") || !xml.EndsWith(">"))
-            return false;
-
-        try
-        {
-            // use span for performance gains and prevent recreation of
-            // string instances and memory usages. useful for big xml's
-            var charSpans = xml.AsSpan();
-            return PerformCharacterLoop(charSpans);
-        }
-        catch (Exception)
-        {
-            // ignore exception, consider malformed xml
-            return false;
-        }
     }
 }
