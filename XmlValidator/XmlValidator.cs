@@ -9,7 +9,7 @@ public static class XmlValidator
     static XmlValidator()
     {
         // define a bigger set of invalid characters once available
-        _invalidCharacters = new[] {' ', '=', '\\', '/', '"', '\''};
+        _invalidCharacters = new[] { ' ', '=', '\\', '/', '"', '\'' };
     }
 
     [Benchmark]
@@ -34,7 +34,7 @@ public static class XmlValidator
     }
 
     /// <summary>
-    ///     The main logic is to always find the first '</' and we should be able to
+    /// The main logic is to always find the first '</' and we should be able to
     /// trace back the opening tag by finding the last inserted '<' symbol on the
     /// lessThanCharElementStarts Stack.
     /// </summary>
