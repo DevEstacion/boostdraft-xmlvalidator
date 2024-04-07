@@ -17,6 +17,6 @@ The test ensures that the current functionality remains consistent and future im
 
 ## Author
 Ronald Estacion \
-[devestacion@skiff.com](mailto:devestacion@skiff.com) \
+[devestacion@gmail.com](mailto:devestacion@gmail.com) \
 Github: https://github.com/DevEstacion \
 LinkedIn: https://www.linkedin.com/in/ronaldestacion/
